@@ -152,13 +152,16 @@ def argmin(f, lo, hi, epsilon=1e-3):
     >>> argmin(lambda x: (x-5)**2, -20, 0)
     -0.00016935087808430278
     '''
-    if (hi - lo) < epsilon:
-        return (lo + hi) / 2
-    m1 = lo + (hi - lo) / 3
-    m2 = lo + (hi - lo) / 3 * 2
-    min_1 = argmin(f, lo, m2, epsilon=epsilon)
-    min_2 = argmin(f, m1, hi, epsilon=epsilon)
-    return min_1 if f(min_1) < f(min_2) else min_2
+    def helper(lo, hi):
+        m1 = lo + (hi - lo) / 4
+        m2 = lo + (hi - lo) / 2
+        if (hi - lo) < epsilon:
+            return hi
+        if f(m1) > f(m2):
+            return helper(m1, hi)
+        if f(m1) < f(m2):
+            return helper(lo, m2)
+    return helper(lo, hi)
 
 
 ###############################################################################
